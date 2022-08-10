@@ -23,8 +23,9 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
     console.log(refreshResult);
     if (refreshResult?.data) {
       const user = api.getState().auth.user;
+      console.log(user);
       //store the new token
-      api.dispatch(setCredentials({ ...refreshResult.data, user }));
+      api.dispatch(setCredentials({ ...refreshResult.data }));
       // retry the original query with new access token
       result = await baseQuery(args, api, extraOptions);
     } else {
@@ -45,10 +46,25 @@ export const apiSlice = createApi({
         body: { ...credentials },
       }),
     }),
+    register: builder.mutation({
+      query: (credentials) => ({
+        url: "/user/register",
+        method: "POST",
+        body: { ...credentials },
+      }),
+    }),
+    logout: builder.query({
+      query: () => "/user/logout",
+    }),
     refreshToken: builder.query({
       query: () => "/user/refresh",
     }),
   }),
 });
 
-export const { useLoginMutation, useRefreshTokenQuery } = apiSlice;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useLogoutQuery,
+  useRefreshTokenQuery,
+} = apiSlice;
