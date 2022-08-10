@@ -1,5 +1,9 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+
+import { setCredentials } from "../store/authSlice";
+import { useRegisterMutation } from "../api/apiSlice";
 
 import Page from "./Page";
 
@@ -14,19 +18,32 @@ import {
 
 const Register = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
+  const [register, { isLoading }] = useRegisterMutation();
+  const dispatch = useDispatch();
 
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-
-    console.log(user);
-    console.log(isLoggedIn);
-    setUsername("");
-    setPassword("");
+    try {
+      const userData = await register({ username, email, password }).unwrap();
+      dispatch(setCredentials({ ...userData }));
+      setUsername("");
+      setPassword("");
+      navigate(from);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  if (isLoading) {
+    <p>Loading...</p>;
+  }
 
   return (
     <Page maxWidth="xs" title="Login">
