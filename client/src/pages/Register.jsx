@@ -53,7 +53,6 @@ const Register = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          minHeight: "82vh",
         }}
       >
         <Avatar sx={{ m: 1 }} />

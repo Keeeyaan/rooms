@@ -9,7 +9,7 @@ import HeaderLoggedOut from "./HeaderLoggedOut";
 import HeaderRoom from "./HeaderRoom";
 
 const Header = () => {
-  const isLoggedIn = useSelector((state) => state.auth.user);
+  const isLoggedIn = useSelector((state) => state.auth.token);
 
   return (
     <Box sx={{ flexGrow: 1 }}>

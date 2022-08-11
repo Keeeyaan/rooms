@@ -1,28 +1,24 @@
-import { useState } from "react";
 import { useEffect } from "react";
 import { Outlet, Navigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
+
 import { setCredentials } from "../store/authSlice";
 import { useRefreshTokenQuery } from "../api/apiSlice";
 
 const PersistLogin = () => {
   const location = useLocation();
-  const [skip, setSkip] = useState(false);
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
 
-  const { isLoading, data, isSuccess, isError } = useRefreshTokenQuery({
-    skip,
-  });
+  //todo: refactor the persist logic
+  const { isLoading, data, isSuccess } = useRefreshTokenQuery(
+    !token ?? skipToken
+  );
 
   useEffect(() => {
-    const verifyRefreshToken = () => {
-      setSkip(true);
-      dispatch(setCredentials({ ...data }));
-      setSkip(false);
-    };
-    !token && verifyRefreshToken();
-  }, []);
+    dispatch(setCredentials({ ...data }));
+  }, [data]);
 
   let content;
 
@@ -30,7 +26,7 @@ const PersistLogin = () => {
     content = <p>Loading...</p>;
   } else if (isSuccess || token) {
     content = <Outlet />;
-  } else if (isError) {
+  } else {
     content = <Navigate to="/login" state={{ from: location }} replace />;
   }
   return content;
