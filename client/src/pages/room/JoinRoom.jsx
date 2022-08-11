@@ -1,24 +1,30 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
+import { useJoinRoomMutation } from "../../store/roomApiSlice";
 import Page from "../Page";
 
-import { TextField, Button, Box, Typography, CssBaseline } from "@mui/material";
+import { TextField, Button, Box, Typography } from "@mui/material";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 const JoinRoom = () => {
-  const [roomCode, setRoomCode] = useState("");
-  const [hasError, setHasError] = useState(false);
+  const navigate = useNavigate();
 
-  const submitHandler = (e) => {
+  const [joinRoom, { isLoading }] = useJoinRoomMutation();
+
+  const [roomCode, setRoomCode] = useState("");
+
+  const submitHandler = async (e) => {
     e.preventDefault();
 
-    // SetError when no class code found in database
-    if (!roomCode) {
-      return setHasError(true);
-    }
-
-    console.log(roomCode);
+    await joinRoom({ roomCode }).unwrap();
+    setRoomCode("");
+    navigate("/");
   };
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <Page title="Join Room |" maxWidth="xs">
@@ -39,16 +45,13 @@ const JoinRoom = () => {
           <TextField
             onChange={(e) => {
               setRoomCode(e.target.value);
-              setHasError(false);
             }}
             fullWidth
             id="roomCode"
             required
-            error={hasError}
             variant="outlined"
             label="Room Code"
             margin="normal"
-            helperText={hasError && "Invalid room code."}
           />
           <Button
             disabled={!roomCode}

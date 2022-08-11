@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { useCreateRoomMutation } from "../../store/roomApiSlice";
 import Page from "../Page";
 
 import { Box, Button, TextField, Typography } from "@mui/material";
@@ -8,15 +10,27 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 const CreateRoom = () => {
   const navigate = useNavigate();
 
+  const [createRoom, { isLoading }] = useCreateRoomMutation();
+
   const [roomTitle, setRoomTitle] = useState("");
   const [roomDescription, setRoomDescription] = useState("");
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
+    await createRoom({
+      title: roomTitle,
+      description: roomDescription,
+    }).unwrap();
+
     setRoomTitle("");
     setRoomDescription("");
+    navigate("/");
   };
+
+  if (isLoading) {
+    <p>Loading...</p>;
+  }
 
   return (
     <Page title="Create Room |" maxWidth="xs">

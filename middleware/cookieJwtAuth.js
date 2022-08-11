@@ -18,7 +18,6 @@ const cookieJwtAuth = async (req, res, next) => {
 
     //inject user info on req.user
     req.user = await User.findById(user.id);
-    console.log(req.user);
 
     return next();
   } catch (error) {

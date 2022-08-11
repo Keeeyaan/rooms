@@ -4,9 +4,16 @@ const roomSlice = createSlice({
   name: "room",
   initialState: { rooms: [] },
   reducers: {
-    joinRoom(state, action) {},
+    getRooms(state, action) {
+      const { roomJoined, roomCreated } = action.payload;
+      console.log(action.payload);
+      state.rooms = [...roomJoined, ...roomCreated];
+    },
+    addNewRoom(state, action) {
+      state.rooms.push(action.payload);
+    },
   },
 });
 
-export const roomSliceActions = roomSlice.actions;
+export const { getRooms, addNewRoom } = roomSlice.actions;
 export default roomSlice.reducer;

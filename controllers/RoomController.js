@@ -6,7 +6,7 @@ const getAllRooms = async (req, res, next) => {
     const roomCreated = await Room.find({ createdBy: req.user._id });
     const roomJoined = await Room.find({ members: req.user.email });
 
-    res.status(200).json({ roomCreated, roomJoined });
+    res.status(200).json([...roomCreated, ...roomJoined]);
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -64,9 +64,5 @@ const joinRoom = async (req, res, next) => {
     res.status(500).send(error.message);
   }
 };
-
-const createNewPost = (req, res, next) => {};
-
-const getAllPosts = (req, res, next) => {};
 
 export { joinRoom, createRoom, getAllRooms };
