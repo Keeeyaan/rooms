@@ -1,12 +1,22 @@
 import Room from "../models/Room.js";
 import CustomError from "../utils/customError.js";
 
-const getAllRooms = async (req, res, next) => {
+const getAllRooms = async (req, res) => {
   try {
     const roomCreated = await Room.find({ createdBy: req.user._id });
     const roomJoined = await Room.find({ members: req.user.email });
 
     res.status(200).json([...roomCreated, ...roomJoined]);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+};
+
+const getSingleRoom = async (req, res) => {
+  try {
+    const post = await Room.findById(req.params.id);
+    console.log(post);
+    res.json(post);
   } catch (error) {
     res.status(500).send(error.message);
   }
@@ -65,4 +75,4 @@ const joinRoom = async (req, res, next) => {
   }
 };
 
-export { joinRoom, createRoom, getAllRooms };
+export { joinRoom, createRoom, getAllRooms, getSingleRoom };

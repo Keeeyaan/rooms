@@ -6,6 +6,9 @@ const roomApiSlice = apiSlice.injectEndpoints({
       query: () => "/room/",
       providesTags: ["Rooms"],
     }),
+    getSingleRoom: builder.query({
+      query: (id) => `/room/${id}`,
+    }),
     createRoom: builder.mutation({
       query: (data) => ({
         url: "/room/createroom",
@@ -27,6 +30,7 @@ const roomApiSlice = apiSlice.injectEndpoints({
 
 export const {
   useGetAllUserRoomsQuery,
+  useGetSingleRoomQuery,
   useCreateRoomMutation,
   useJoinRoomMutation,
 } = roomApiSlice;

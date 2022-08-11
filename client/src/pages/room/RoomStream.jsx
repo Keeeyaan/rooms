@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 import Page from "../Page";
+import { useGetSingleRoomQuery } from "../../store/roomApiSlice";
+
 import RoomHeader from "../../components/UI/RoomHeader";
 import Post from "../../components/Post/Post";
 
@@ -16,8 +19,15 @@ import {
 } from "@mui/material";
 
 const RoomStream = () => {
+  const { id } = useParams();
   const [clickPost, setClickPost] = useState(false);
   const [post, setPost] = useState("");
+
+  const { data, isLoading } = useGetSingleRoomQuery(id);
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -25,8 +35,8 @@ const RoomStream = () => {
     setPost("");
   };
   return (
-    <Page title="GAMERS" maxWidth="lg">
-      <RoomHeader />
+    <Page title={`${data.title} |`} maxWidth="lg">
+      <RoomHeader data={data} />
       <Container maxWidth="md">
         <Card sx={{ mb: 4 }}>
           {clickPost ? (

@@ -1,8 +1,6 @@
-import React from "react";
+import { Paper, Box, Grid, Typography } from "@mui/material";
 
-import { Paper, Box, Grid, Typography, Divider } from "@mui/material";
-
-const RoomHeader = () => {
+const RoomHeader = ({ data }) => {
   return (
     <Paper
       sx={{
@@ -28,12 +26,12 @@ const RoomHeader = () => {
             }}
           >
             <Typography component="h1" variant="h3" color="inherit" mb={1}>
-              Cool
+              {data.title}
             </Typography>
             <Typography variant="h6" color="inherit" mb={1}>
-              Cool Room
+              {data.description}
             </Typography>
-            <Typography variant="body1">18aSDCPE</Typography>
+            <Typography variant="body1">{data.roomCode}</Typography>
           </Box>
         </Grid>
       </Grid>

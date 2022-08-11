@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import { useGetAllUserRoomsQuery } from "../store/roomApiSlice";
 import Page from "./Page";
@@ -37,7 +38,6 @@ const Home = () => {
   } else if (isError) {
     content = <p>No room found!</p>;
   }
-
   return content;
 };
 
