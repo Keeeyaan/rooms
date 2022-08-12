@@ -38,7 +38,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 
 export const apiSlice = createApi({
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Rooms"],
+  tagTypes: ["Rooms", "Posts"],
   endpoints: (builder) => ({
     login: builder.mutation({
       query: (credentials) => ({

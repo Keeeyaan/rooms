@@ -113,6 +113,7 @@ const HeaderLoggedIn = () => {
           onClick={() => {
             dispatch(logOut());
             console.log("LOGOUT");
+            navigate("/login");
           }}
         >
           <ListItemIcon>

@@ -15,25 +15,39 @@ const roomSchema = mongoose.Schema({
   members: [String],
   posts: [
     {
-      id: {
+      createdBy: {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+        required: [true, "Please provide a user id"],
+      },
+      username: {
         type: String,
-        required: true,
+        required: [true, "Please provide a username"],
       },
       message: {
         type: String,
-        required: true,
+        required: [true, "Please provide a message"],
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
       },
     },
   ],
   notes: [
     {
       id: {
-        type: String,
-        required: true,
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+        required: [true, "Please provide a user id"],
       },
       message: {
         type: String,
-        required: true,
+        required: [true, "Please provide a message"],
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
       },
     },
   ],

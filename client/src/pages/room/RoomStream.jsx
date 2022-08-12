@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 
 import Page from "../Page";
 import { useGetSingleRoomQuery } from "../../store/roomApiSlice";
+import { useCreatePostMutation } from "../../store/postApiSlice";
+import { useGetAllPostsQuery } from "../../store/postApiSlice";
 
 import RoomHeader from "../../components/UI/RoomHeader";
 import Post from "../../components/Post/Post";
@@ -24,15 +26,19 @@ const RoomStream = () => {
   const [post, setPost] = useState("");
 
   const { data, isLoading } = useGetSingleRoomQuery(id);
+  const { data: postData, isLoading: postLoading } = useGetAllPostsQuery(id);
 
-  if (isLoading) {
+  const [createPost, { isError }] = useCreatePostMutation();
+
+  if (isLoading || postLoading) {
     return <p>Loading...</p>;
   }
 
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
-    console.log(post);
+    await createPost({ post, id }).unwrap();
     setPost("");
+    setClickPost(false);
   };
   return (
     <Page title={`${data.title} |`} maxWidth="lg">
@@ -62,7 +68,9 @@ const RoomStream = () => {
                   justifyContent: "flex-end",
                 }}
               >
-                <Button onClick={() => setClickPost(false)}>Cancel</Button>
+                <Button type="button" onClick={() => setClickPost(false)}>
+                  Cancel
+                </Button>
                 <Button
                   type="submit"
                   sx={{ ml: 2 }}
@@ -74,15 +82,35 @@ const RoomStream = () => {
               </Box>
             </Box>
           ) : (
-            <CardActionArea onClick={() => setClickPost(true)}>
-              <Avatar />
-              <Typography variant="caption" color="text.secondary">
-                Announce something to your room
-              </Typography>
-            </CardActionArea>
+            <Box onClick={() => setClickPost(true)}>
+              <CardActionArea
+                sx={{
+                  display: "flex",
+                  height: "4rem",
+                  width: "auto",
+                  ml: "2rem",
+                }}
+              >
+                <Avatar />
+                <Typography variant="caption" color="text.secondary" ml="1rem">
+                  Announce something to your room
+                </Typography>
+              </CardActionArea>
+            </Box>
           )}
         </Card>
-        <Post />
+        {postData
+          .map((post) => (
+            <Post
+              key={post._id}
+              user={post.username}
+              message={post.message}
+              created={post.createdAt}
+              roomId={id}
+              postId={post._id}
+            />
+          ))
+          .reverse()}
       </Container>
     </Page>
   );

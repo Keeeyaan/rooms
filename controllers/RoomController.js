@@ -14,9 +14,13 @@ const getAllRooms = async (req, res) => {
 
 const getSingleRoom = async (req, res) => {
   try {
-    const post = await Room.findById(req.params.id);
-    console.log(post);
-    res.json(post);
+    const room = await Room.findById(req.params.id);
+
+    if (!room) {
+      return next(new CustomError("No room found", 400));
+    }
+
+    res.json(room);
   } catch (error) {
     res.status(500).send(error.message);
   }

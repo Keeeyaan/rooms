@@ -11,6 +11,7 @@ const app = express();
 //import all routes here
 import UserRoutes from "./routes/UserRoutes.js";
 import RoomRoutes from "./routes/RoomRoutes.js";
+import PostRoutes from "./routes/PostRoutes.js";
 
 //regular middleware
 app.use(express.json());
@@ -33,5 +34,6 @@ app.use(
 //router middleware
 app.use("/api/v1/user", UserRoutes);
 app.use("/api/v1/room", cookieJwtAuth, RoomRoutes);
+app.use("/api/v1/post", cookieJwtAuth, PostRoutes);
 
 export default app;
