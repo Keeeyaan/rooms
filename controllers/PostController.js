@@ -74,8 +74,30 @@ const deletePost = async (req, res, next) => {
   }
 };
 
-const editPost = (req, res, next) => {
-  res.send("SUP");
+const editPost = async (req, res, next) => {
+  try {
+    const { postId, roomId, message: newMessage } = req.body;
+
+    if (!(postId && roomId)) {
+      return next(new CustomError("Post not found", 400));
+    }
+
+    const room = await Room.findById(roomId);
+
+    if (!room) {
+      return next(new CustomError("Room not found", 400));
+    }
+
+    const updatedRoom = await Room.findOneAndUpdate(
+      { _id: room._id, "posts._id": postId },
+      { $set: { "posts.$.message": newMessage } },
+      { new: true, runValidators: true }
+    );
+
+    res.status(201).json(updatedRoom);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 };
 
 export { getAllPost, createPost, deletePost, editPost };

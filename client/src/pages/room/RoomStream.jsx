@@ -59,6 +59,7 @@ const RoomStream = () => {
                 label="Announce something to your room"
                 value={post}
                 fullWidth
+                sx={{ pt: 1 }}
               />
               <Box
                 component="div"
@@ -108,6 +109,7 @@ const RoomStream = () => {
               created={post.createdAt}
               roomId={id}
               postId={post._id}
+              createdBy={post.createdBy}
             />
           ))
           .reverse()}

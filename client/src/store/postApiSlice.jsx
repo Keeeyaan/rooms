@@ -14,6 +14,14 @@ const postApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Posts"],
     }),
+    editPost: builder.mutation({
+      query: (data) => ({
+        url: "/post/editpost",
+        method: "PATCH",
+        body: { ...data },
+      }),
+      invalidatesTags: ["Posts"],
+    }),
     deletePost: builder.mutation({
       query: (data) => ({
         url: `/post/deletepost`,
@@ -27,5 +35,6 @@ const postApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetAllPostsQuery,
   useCreatePostMutation,
+  useEditPostMutation,
   useDeletePostMutation,
 } = postApiSlice;
