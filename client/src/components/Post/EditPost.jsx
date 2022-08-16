@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { useEditPostMutation } from "../../store/postApiSlice";
+import { Card, Box, Button, TextField } from '@mui/material';
 
-import { Card, Box, Button, TextField } from "@mui/material";
+import { useEditPostMutation } from '../../store/postApiSlice';
 
-const PostEdit = ({ message, setEditingPost, roomId, postId }) => {
+const EditPost = ({ message, setEditingPost, roomId, postId }) => {
   const [post, setPost] = useState(message);
 
   const [editPost, { isLoading }] = useEditPostMutation();
@@ -13,39 +13,40 @@ const PostEdit = ({ message, setEditingPost, roomId, postId }) => {
     e.preventDefault();
     await editPost({ message: post, roomId, postId });
     setEditingPost(false);
-    setPost("");
+    setPost('');
   };
 
+  console.log('POST RUNNING');
   return (
     <Card sx={{ mb: 4 }}>
-      <Box component="form" onSubmit={submitHandler} sx={{ mx: 3, mt: 2 }}>
+      <Box component='form' onSubmit={submitHandler} sx={{ mx: 3, mt: 2 }}>
         <TextField
-          variant="filled"
+          variant='filled'
           multiline
           minRows={2}
           onChange={(e) => setPost(e.target.value)}
-          label="Update your announcement"
+          label='Update your announcement'
           value={post}
           fullWidth
           autoFocus
           sx={{ pt: 1 }}
         />
         <Box
-          component="div"
+          component='div'
           sx={{
             my: 1,
-            display: "flex",
-            justifyContent: "flex-end",
+            display: 'flex',
+            justifyContent: 'flex-end',
           }}
         >
-          <Button type="button" onClick={() => setEditingPost(false)}>
+          <Button type='button' onClick={() => setEditingPost(false)}>
             Cancel
           </Button>
           <Button
-            type="submit"
+            type='submit'
             sx={{ ml: 2 }}
             disabled={!post}
-            variant="contained"
+            variant='contained'
           >
             Update
           </Button>
@@ -55,4 +56,4 @@ const PostEdit = ({ message, setEditingPost, roomId, postId }) => {
   );
 };
 
-export default PostEdit;
+export default EditPost;

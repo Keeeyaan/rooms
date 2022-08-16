@@ -6,14 +6,16 @@ import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { setCredentials } from "../store/authSlice";
 import { useRefreshTokenQuery } from "../api/apiSlice";
 
-const PersistLogin = () => {
+import { CircularProgress } from "@mui/material";
+
+const ProtectedRoutes = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.token);
 
-  //todo: refactor the persist logic
   const { isLoading, data, isSuccess } = useRefreshTokenQuery(
-    !token ?? skipToken
+    undefined,
+    !token && skipToken
   );
 
   useEffect(() => {
@@ -23,8 +25,8 @@ const PersistLogin = () => {
   let content;
 
   if (isLoading) {
-    content = <p>Loading...</p>;
-  } else if (isSuccess || token) {
+    content = <CircularProgress />;
+  } else if (token || isSuccess) {
     content = <Outlet />;
   } else {
     content = <Navigate to="/login" state={{ from: location }} replace />;
@@ -32,4 +34,4 @@ const PersistLogin = () => {
   return content;
 };
 
-export default PersistLogin;
+export default ProtectedRoutes;

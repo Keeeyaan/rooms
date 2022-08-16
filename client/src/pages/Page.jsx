@@ -4,7 +4,7 @@ import { Container } from "@mui/system";
 
 const Page = (props) => {
   useEffect(() => {
-    document.title = `${props.title} ROOMS`;
+    document.title = `${props.title || ""} ROOMS`;
     window.scrollTo(0, 0);
   }, [props.title]);
 

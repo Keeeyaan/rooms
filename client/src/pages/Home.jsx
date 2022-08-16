@@ -1,26 +1,26 @@
-import { Link } from "react-router-dom";
-import { Navigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
+import { Grid, CircularProgress } from '@mui/material';
 
-import { useGetAllUserRoomsQuery } from "../store/roomApiSlice";
-import Page from "./Page";
+import { useGetAllUserRoomsQuery } from '../store/roomApiSlice';
 
-import RoomCard from "../components/UI/RoomCard";
-import { Grid } from "@mui/material";
+import Page from './Page';
+import RoomCard from '../components/UI/RoomCard';
 
 const Home = () => {
   const { data, isLoading, isError, isSuccess } = useGetAllUserRoomsQuery();
 
   let content;
+
   if (isLoading) {
-    content = <p>Loading...</p>;
+    content = <CircularProgress />;
   } else if (isSuccess) {
     content = (
-      <Page title="">
+      <Page>
         <Grid
           container
           spacing={2}
-          justifyContent="flex-start"
-          sx={{ marginTop: "2rem" }}
+          justifyContent='flex-start'
+          sx={{ marginTop: '2rem' }}
         >
           {data.map((currRoom) => (
             <Grid key={currRoom._id} item xs={12} sm={6} md={4} lg={3}>
@@ -38,6 +38,7 @@ const Home = () => {
   } else if (isError) {
     content = <p>No room found!</p>;
   }
+
   return content;
 };
 

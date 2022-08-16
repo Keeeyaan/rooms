@@ -1,10 +1,10 @@
-import { useState } from "react";
-import dayjs from "dayjs";
-import { useSelector } from "react-redux";
+import React, { useState } from 'react';
+import dayjs from 'dayjs';
+import { useSelector } from 'react-redux';
 
-import { useDeletePostMutation } from "../../store/postApiSlice";
+import { useDeletePostMutation } from '../../store/postApiSlice';
 
-import PostEdit from "./PostEdit";
+import EditPost from './EditPost';
 
 import {
   Card,
@@ -16,12 +16,13 @@ import {
   Tooltip,
   Menu,
   MenuItem,
-} from "@mui/material";
+  CircularProgress,
+} from '@mui/material';
 
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const Post = ({ user, message, created, roomId, postId, createdBy }) => {
-  const formatted = dayjs(created).format("MMM D, YYYY | h:mm A");
+  const formatted = dayjs(created).format('MMM D, YYYY | h:mm A');
   const userId = useSelector((state) => state.auth.user._id);
 
   const [anchorElm, setAnchorElm] = useState(null);
@@ -41,30 +42,23 @@ const Post = ({ user, message, created, roomId, postId, createdBy }) => {
   };
 
   if (isLoading) {
-    return console.log("loading...");
-  } else if (isSuccess) {
-    return console.log("success...");
+    return <CircularProgress />;
   }
 
   return (
     <>
-      {editingPost ? (
-        <PostEdit
-          setEditingPost={setEditingPost}
-          roomId={roomId}
-          postId={postId}
-          message={message}
-        />
-      ) : (
+      {!editingPost ? (
         <>
-          <Card variant="outlined" sx={{ mb: "1rem" }}>
+          <Card variant='outlined' sx={{ mb: '1rem' }}>
             <CardHeader
-              avatar={<Avatar>{user.charAt(0)}</Avatar>}
+              avatar={
+                <Avatar sx={{ bgcolor: '#1976D2' }}>{user.charAt(0)}</Avatar>
+              }
               action={
                 userId === createdBy && (
-                  <Tooltip title="Settings">
+                  <Tooltip title='Settings'>
                     <IconButton
-                      aria-label="Settings"
+                      aria-label='Settings'
                       onClick={settingsClickHandler}
                     >
                       <MoreVertIcon />
@@ -72,11 +66,11 @@ const Post = ({ user, message, created, roomId, postId, createdBy }) => {
                   </Tooltip>
                 )
               }
-              title={<Typography variant="subtitle2">{user}</Typography>}
+              title={<Typography variant='subtitle2'>{user}</Typography>}
               subheader={formatted}
             />
             <CardContent>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant='body2' color='text.secondary'>
                 {message}
               </Typography>
             </CardContent>
@@ -91,7 +85,7 @@ const Post = ({ user, message, created, roomId, postId, createdBy }) => {
             }}
           >
             <MenuItem
-              id="joinRoom"
+              id='joinRoom'
               onClick={(e) => {
                 e.preventDefault();
                 settingsCloseHandler();
@@ -101,7 +95,7 @@ const Post = ({ user, message, created, roomId, postId, createdBy }) => {
               Edit
             </MenuItem>
             <MenuItem
-              id="createRoom"
+              id='createRoom'
               onClick={async () => {
                 settingsCloseHandler();
                 await deletePost({ postId, roomId });
@@ -111,9 +105,16 @@ const Post = ({ user, message, created, roomId, postId, createdBy }) => {
             </MenuItem>
           </Menu>
         </>
+      ) : (
+        <EditPost
+          setEditingPost={setEditingPost}
+          roomId={roomId}
+          postId={postId}
+          message={message}
+        />
       )}
     </>
   );
 };
 
-export default Post;
+export default React.memo(Post);

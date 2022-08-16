@@ -16,6 +16,7 @@ import {
   FormControlLabel,
   Grid,
   Checkbox,
+  CircularProgress,
 } from "@mui/material";
 
 const Login = () => {
@@ -43,7 +44,7 @@ const Login = () => {
   };
 
   if (isLoading) {
-    <p>Loading...</p>;
+    <CircularProgress />;
   }
 
   return (
