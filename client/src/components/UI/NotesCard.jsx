@@ -4,9 +4,9 @@ import { Paper, Divider, Box, IconButton, Typography } from '@mui/material';
 import { TextareaAutosize } from '@mui/base';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const NotesCard = ({ notesColor }) => {
+const NotesCard = ({ notesColor, message }) => {
   const characterLimit = 200;
-  const [noteText, setNoteText] = useState('');
+  const [noteText, setNoteText] = useState(message);
 
   const noteTextChangeHandler = (e) => {
     if (characterLimit - e.target.value.length >= 0) {
@@ -19,7 +19,7 @@ const NotesCard = ({ notesColor }) => {
   };
 
   return (
-    <Paper sx={{ backgroundColor: notesColor || '', width: 320 }} elevation={2}>
+    <Paper sx={{ backgroundColor: notesColor || '', width: 320 }} elevation={4}>
       <TextareaAutosize
         style={{
           border: 'none',
@@ -35,7 +35,7 @@ const NotesCard = ({ notesColor }) => {
         onChange={noteTextChangeHandler}
         aria-label='notes textarea'
         placeholder='Type to add a note...'
-        value={noteText}
+        defaultValue={noteText}
         maxLength={characterLimit}
       />
       <Divider />
