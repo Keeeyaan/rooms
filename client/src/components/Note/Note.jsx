@@ -1,11 +1,31 @@
 import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import dayjs from 'dayjs';
 
-import { Paper, Divider, Box, IconButton, Typography } from '@mui/material';
+import {
+  useDeleteNoteMutation,
+  useEditNoteMutation,
+} from '../../store/noteApiSlice';
+
+import {
+  Paper,
+  Divider,
+  Box,
+  IconButton,
+  Typography,
+  CircularProgress,
+} from '@mui/material';
 import { TextareaAutosize } from '@mui/base';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const NotesCard = ({ notesColor, message }) => {
+const NotesCard = ({ color, message, id: noteId, created }) => {
+  const { id } = useParams();
+  const formatted = dayjs(created).format('MMM/D/YYYY');
   const characterLimit = 200;
+
+  const [deleteNote, { isLoading }] = useDeleteNoteMutation();
+  const [editNote, { isLoading: editNoteIsLoading }] = useEditNoteMutation();
+
   const [noteText, setNoteText] = useState(message);
 
   const noteTextChangeHandler = (e) => {
@@ -14,12 +34,21 @@ const NotesCard = ({ notesColor, message }) => {
     }
   };
 
-  const deleteHandler = () => {
-    console.log('notes deleted');
+  const saveNoteOnCloseHandler = async (e) => {
+    if (e.target.value === message) return;
+
+    const newMessage = e.target.value;
+    await editNote({ id, noteId, newMessage });
   };
 
+  const deleteHandler = async () => {
+    await deleteNote({ id, noteId }).unwrap();
+  };
+
+  if (isLoading || editNoteIsLoading) return <CircularProgress />;
+
   return (
-    <Paper sx={{ backgroundColor: notesColor || '', width: 320 }} elevation={4}>
+    <Paper sx={{ backgroundColor: color || '', width: 320 }} elevation={4}>
       <TextareaAutosize
         style={{
           border: 'none',
@@ -30,13 +59,14 @@ const NotesCard = ({ notesColor, message }) => {
           fontFamily: 'inherit',
           padding: '1rem',
           resize: 'none',
-          backgroundColor: notesColor || '',
+          backgroundColor: color || '',
         }}
         onChange={noteTextChangeHandler}
-        aria-label='notes textarea'
+        aria-label='notes text area'
         placeholder='Type to add a note...'
-        defaultValue={noteText}
+        defaultValue={message}
         maxLength={characterLimit}
+        onBlur={saveNoteOnCloseHandler}
       />
       <Divider />
       <Box
@@ -50,7 +80,9 @@ const NotesCard = ({ notesColor, message }) => {
         <Typography sx={{ p: 1 }} variant='caption'>
           {characterLimit - noteText.length} Remaning
         </Typography>
-        {/* <Typography sx={{ fontWeight: 500, p: 1 }}>09/25/22</Typography> */}
+        <Typography variant='caption' sx={{ fontWeight: 500, p: 1 }}>
+          {formatted}
+        </Typography>
         <IconButton aria-label='delete' color='error' onClick={deleteHandler}>
           <DeleteIcon />
         </IconButton>

@@ -16,8 +16,8 @@ const getAllNotes = async (req, res, next) => {
 
 const createNote = async (req, res, next) => {
   try {
-    const { note, id } = req.body;
-
+    const { note, id, color } = req.body;
+    console.log(color);
     if (!id) {
       return next(new CustomError('Id not found', 400));
     }
@@ -34,6 +34,7 @@ const createNote = async (req, res, next) => {
         $push: {
           notes: {
             message: note,
+            color: color,
           },
         },
       },
@@ -48,7 +49,7 @@ const createNote = async (req, res, next) => {
 
 const deleteNote = async (req, res, next) => {
   try {
-    const { noteId, roomId } = req.body;
+    const { noteId, id: roomId } = req.body;
 
     if (!(noteId && roomId)) {
       return next(new CustomError('Note not found', 400));
@@ -62,7 +63,7 @@ const deleteNote = async (req, res, next) => {
 
     await Room.findOneAndUpdate(
       { _id: room._id },
-      { $pull: { posts: { _id: noteId } } },
+      { $pull: { notes: { _id: noteId } } },
       { safe: true, multi: false }
     );
 
@@ -74,20 +75,20 @@ const deleteNote = async (req, res, next) => {
 
 const editNote = async (req, res, next) => {
   try {
-    const { postId, roomId, message: newMessage } = req.body;
+    const { noteId, id, newMessage } = req.body;
 
-    if (!(postId && roomId)) {
+    if (!(noteId && id)) {
       return next(new CustomError('Note not found', 400));
     }
 
-    const room = await Room.findById(roomId);
+    const room = await Room.findById(id);
 
     if (!room) {
       return next(new CustomError('Room not found', 400));
     }
 
     const updatedRoom = await Room.findOneAndUpdate(
-      { _id: room._id, 'notes._id': postId },
+      { _id: room._id, 'notes._id': noteId },
       { $set: { 'notes.$.message': newMessage } },
       { new: true, runValidators: true }
     );

@@ -38,6 +38,11 @@ const roomSchema = mongoose.Schema({
     {
       message: {
         type: String,
+        default: '',
+      },
+      color: {
+        type: String,
+        default: 'white',
       },
       createdAt: {
         type: Date,
